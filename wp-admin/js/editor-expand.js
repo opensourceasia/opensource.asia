@@ -15,7 +15,7 @@
 			$visualEditor = $(),
 			$textTop = $( '#ed_toolbar' ),
 			$textEditor = $( '#content' ),
-			$textEditorClone = $( '<div id="content-textarea-clone"></div>' ),
+			$textEditorClone = $( '<div id="content-textarea-clone" class="wp-exclude-emoji"></div>' ),
 			$bottom = $( '#post-status-info' ),
 			$menuBar = $(),
 			$statusBar = $(),
@@ -1184,7 +1184,7 @@
 				$document.on( 'dfw-on.focus', mceBind ).on( 'dfw-off.focus', mceUnbind );
 
 				// Make sure the body focuses when clicking outside it.
-				editor.on( 'click', function( event ) {
+				editor.on( 'click', function( event ) {
 					if ( event.target === editor.getDoc().documentElement ) {
 						editor.focus();
 					}
