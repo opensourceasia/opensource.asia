@@ -2,7 +2,7 @@
 /**
  * Author: Alin Marcu
  * Author URI: https://deconf.com
- * Copyright 2013 Alin Marcu 
+ * Copyright 2013 Alin Marcu
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -24,7 +24,6 @@ class GADWP_Install {
 			$options['ga_dash_style'] = '#1e73be';
 			$options['switch_profile'] = 0;
 			$options['ga_dash_cachetime'] = 3600;
-			$options['ga_dash_tracking'] = 1;
 			$options['ga_dash_tracking_type'] = 'universal';
 			$options['ga_dash_default_ua'] = '';
 			$options['ga_dash_anonim'] = 0;
@@ -42,15 +41,17 @@ class GADWP_Install {
 			$options['ga_dash_remarketing'] = 0;
 			$options['ga_dash_frontend_stats'] = 0;
 			$options['ga_dash_network'] = 0;
-			$options['ga_dash_adsense'] = 0;
 			$options['ga_speed_samplerate'] = 1;
+			$options['ga_user_samplerate'] = 100;
 			$options['ga_event_bouncerate'] = 0;
 			$options['ga_crossdomain_tracking'] = 0;
 			$options['ga_crossdomain_list'] = '';
 			$options['ga_author_dimindex'] = 0;
 			$options['ga_category_dimindex'] = 0;
+			$options['ga_tag_dimindex'] = 0;
 			$options['ga_user_dimindex'] = 0;
 			$options['ga_pubyear_dimindex'] = 0;
+			$options['ga_pubyearmonth_dimindex'] = 0;
 			$options['ga_aff_tracking'] = 0;
 			$options['ga_event_affiliates'] = '/out/';
 			$options['automatic_updates_minorversion'] = 1;
@@ -61,6 +62,31 @@ class GADWP_Install {
 			$options['ga_cookiedomain'] = '';
 			$options['ga_cookiename'] = '';
 			$options['ga_cookieexpires'] = '';
+			$options['pagetitle_404'] = 'Page Not Found';
+			$options['maps_api_key'] = '';
+			$options['tm_author_var'] = 0;
+			$options['tm_category_var'] = 0;
+			$options['tm_tag_var'] = 0;
+			$options['tm_user_var'] = 0;
+			$options['tm_pubyear_var'] = 0;
+			$options['tm_pubyearmonth_var'] = 0;
+			$options['web_containerid'] = '';
+			$options['amp_containerid'] = '';
+			$options['amp_tracking_tagmanager'] = 0;
+			$options['amp_tracking_analytics'] = 0;
+			$options['amp_tracking_clientidapi'] = 0;
+			$options['trackingcode_infooter'] = 0;
+			$options['trackingevents_infooter'] = 0;
+			$options['ecommerce_mode'] = 'disabled';
+			$options['ga_formsubmit_tracking'] = 0;
+			$options['optimize_tracking'] = 0;
+			$options['optimize_containerid'] = '';
+			$options['optimize_pagehiding'] = '';
+			$options['ga_dash_excludesa'] = 0;
+			$options['ga_pagescrolldepth_tracking'] = 0;
+			$options['tm_pagescrolldepth_tracking'] = 0;
+			$options['ga_event_precision'] = 0;
+			$options['ga_force_ssl'] = 0;
 		} else {
 			$options = array();
 			$options['ga_dash_clientid'] = get_option( 'ga_dash_clientid' );
@@ -73,11 +99,6 @@ class GADWP_Install {
 			$options['ga_dash_style'] = '#1e73be';
 			$options['switch_profile'] = get_option( 'ga_dash_jailadmins' );
 			$options['ga_dash_cachetime'] = get_option( 'ga_dash_cachetime' );
-			if ( get_option( 'ga_dash_tracking' ) == 4 ) {
-				$options['ga_dash_tracking'] = 0;
-			} else {
-				$options['ga_dash_tracking'] = 1;
-			}
 			$options['ga_dash_tracking_type'] = get_option( 'ga_dash_tracking_type' );
 			$options['ga_dash_default_ua'] = get_option( 'ga_dash_default_ua' );
 			$options['ga_dash_anonim'] = get_option( 'ga_dash_anonim' );
@@ -98,8 +119,10 @@ class GADWP_Install {
 			$options['ga_crossdomain_list'] = '';
 			$options['ga_author_dimindex'] = 0;
 			$options['ga_category_dimindex'] = 0;
+			$options['ga_tag_dimindex'] = 0;
 			$options['ga_user_dimindex'] = 0;
 			$options['ga_pubyear_dimindex'] = 0;
+			$options['ga_pubyearmonth_dimindex'] = 0;
 			$options['ga_event_affiliates'] = '/out/';
 			$options['ga_aff_tracking'] = 0;
 			$options['automatic_updates_minorversion'] = 1;
@@ -110,7 +133,34 @@ class GADWP_Install {
 			$options['ga_cookiedomain'] = '';
 			$options['ga_cookiename'] = '';
 			$options['ga_cookieexpires'] = '';
-			
+			$options['pagetitle_404'] = 'Page Not Found';
+			$options['maps_api_key'] = '';
+			$options['tm_author_var'] = 0;
+			$options['tm_category_var'] = 0;
+			$options['tm_tag_var'] = 0;
+			$options['tm_user_var'] = 0;
+			$options['tm_pubyear_var'] = 0;
+			$options['tm_pubyearmonth_var'] = 0;
+			$options['web_containerid'] = '';
+			$options['amp_containerid'] = '';
+			$options['amp_tracking_tagmanager'] = 0;
+			$options['amp_tracking_analytics'] = 0;
+			$options['amp_tracking_clientidapi'] = 0;
+			$options['trackingcode_infooter'] = 0;
+			$options['trackingevents_infooter'] = 0;
+			$options['ecommerce_mode'] = 'disabled';
+			$options['ga_formsubmit_tracking'] = 0;
+			$options['optimize_tracking'] = 0;
+			$options['optimize_containerid'] = '';
+			$options['optimize_pagehiding'] = '';
+			$options['ga_dash_excludesa'] = 0;
+			$options['ga_pagescrolldepth_tracking'] = 0;
+			$options['tm_pagescrolldepth_tracking'] = 0;
+			$options['ga_speed_samplerate'] = 1;
+			$options['ga_user_samplerate'] = 100;
+			$options['ga_event_precision'] = 0;
+			$options['ga_force_ssl'] = 0;
+
 			delete_option( 'ga_dash_clientid' );
 			delete_option( 'ga_dash_clientsecret' );
 			delete_option( 'ga_dash_access' );

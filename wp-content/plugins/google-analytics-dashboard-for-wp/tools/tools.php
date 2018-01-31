@@ -45,10 +45,15 @@ if ( ! class_exists( 'GADWP_Tools' ) ) {
 			}
 		}
 
-		public static function get_root_domain( $domain ) {
-			$root = explode( '/', $domain );
-			preg_match( "/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i", str_ireplace( 'www', '', isset( $root[2] ) ? $root[2] : $domain ), $root );
-			return $root;
+		public static function get_root_domain() {
+			$url = site_url();
+			$root = explode( '/', $url );
+			preg_match( '/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', str_ireplace( 'www', '', isset( $root[2] ) ? $root[2] : $url ), $root );
+			if ( isset( $root['domain'] ) ) {
+				return $root['domain'];
+			} else {
+				return '';
+			}
 		}
 
 		public static function strip_protocol( $domain ) {
@@ -121,7 +126,7 @@ if ( ! class_exists( 'GADWP_Tools' ) ) {
 
 		public static function set_cache( $name, $value, $expiration = 0 ) {
 			$option = array( 'value' => $value, 'expires' => time() + (int) $expiration );
-			update_option( 'gadwp_cache_' . $name, $option );
+			update_option( 'gadwp_cache_' . $name, $option, 'no' );
 		}
 
 		public static function delete_cache( $name ) {
@@ -170,6 +175,75 @@ if ( ! class_exists( 'GADWP_Tools' ) ) {
 		public static function clear_cache() {
 			global $wpdb;
 			$sqlquery = $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'gadwp_cache_qr%%'" );
+		}
+
+		public static function get_sites( $args ) { // Use wp_get_sites() if WP version is lower than 4.6.0
+			global $wp_version;
+			if ( version_compare( $wp_version, '4.6.0', '<' ) ) {
+				return wp_get_sites( $args );
+			} else {
+				foreach ( get_sites( $args ) as $blog ) {
+					$blogs[] = (array) $blog; // Convert WP_Site object to array
+				}
+				return $blogs;
+			}
+		}
+
+		/**
+		 * Loads a view file
+		 *
+		 * $data parameter will be available in the template file as $data['value']
+		 *
+		 * @param string $template - Template file to load
+		 * @param array $data - data to pass along to the template
+		 * @return boolean - If template file was found
+		 **/
+		public static function load_view( $path, $data = array() ) {
+			if ( file_exists( GADWP_DIR . $path ) ) {
+				require_once ( GADWP_DIR . $path );
+				return true;
+			}
+			return false;
+		}
+
+		public static function doing_it_wrong( $function, $message, $version ) {
+			if ( WP_DEBUG && apply_filters( 'doing_it_wrong_trigger_error', true ) ) {
+				if ( is_null( $version ) ) {
+					$version = '';
+				} else {
+					/* translators: %s: version number */
+					$version = sprintf( __( 'This message was added in version %s.', 'google-analytics-dashboard-for-wp' ), $version );
+				}
+
+				/* translators: Developer debugging message. 1: PHP function name, 2: Explanatory message, 3: Version information message */
+				trigger_error( sprintf( __( '%1$s was called <strong>incorrectly</strong>. %2$s %3$s', 'google-analytics-dashboard-for-wp' ), $function, $message, $version ) );
+			}
+		}
+
+		public static function get_dom_from_content( $content ) {
+			$libxml_previous_state = libxml_use_internal_errors( true );
+			if ( class_exists( 'DOMDocument' ) ) {
+				$dom = new DOMDocument();
+				$result = $dom->loadHTML( '<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"></head><body>' . $content . '</body></html>' );
+				libxml_clear_errors();
+				libxml_use_internal_errors( $libxml_previous_state );
+				if ( ! $result ) {
+					return false;
+				}
+				return $dom;
+			} else {
+				self::set_cache( 'last_error', date( 'Y-m-d H:i:s' ) . ': ' . __( 'DOM is disabled or libxml PHP extension is missing. Contact your hosting provider. Automatic tracking of events for AMP pages is not possible.', 'google-analytics-dashboard-for-wp' ), 24*60*60 );
+				return false;
+			}
+		}
+
+		public static function get_content_from_dom( $dom ) {
+			$out = '';
+			$body = $dom->getElementsByTagName( 'body' )->item( 0 );
+			foreach ( $body->childNodes as $node ) {
+				$out .= $dom->saveXML( $node );
+			}
+			return $out;
 		}
 	}
 }
