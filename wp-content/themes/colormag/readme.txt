@@ -20,6 +20,7 @@ Resources packed within the theme.
 * Magnific-Popup by Dmitry Semenov | MIT Licensed
 * FitVids by Chris Coyier and Paravel | WTFPL Licensed
 * Bxslider by Steven Wanderski released under the MIT license
+* TGM-Plugin-Activation by Thomas Griffin, Gary Jones, Juliette Reinders Folmer | GPL v2 Licensed
 * Other custom js files are our own creation and is licensed under the same license as this theme.
 
 All other resources and theme elements are licensed under the [GNU GPL](http://www.gnu.org/licenses/gpl-3.0.txt), version 3 or later.
@@ -32,10 +33,10 @@ ColorMag is distributed under the terms of the GNU GPL
 == THEME USAGE ==
 
 = Theme Instruction =
-Get theme instruction at http://themegrill.com/theme-instruction/colormag/
+Get theme instruction at https://themegrill.com/theme-instruction/colormag/
 
 = Free Support =
-Get free support at http://themegrill.com/support-forum
+Get free support at https://themegrill.com/support-forum
 
 = Theme Features Usage =
 All available options can be used from Appearance->Customize
@@ -48,7 +49,63 @@ and we will include it within the theme from next version update.
 
 /**********************************************************/
 
-== CHANGE LOG ==
+== Changelog ==
+= Version 1.2.3 - 2017-12-12 =
+* Added - Scrollbar for fixed better responsive menu if overflow.
+* Tweaks - Touch screen accessible submenu
+* Feature - Added Elementor plugin support
+* Feature - Added Block widgets for use within Elementor plugin
+* Feature - Added Grid widgets for use within Elementor plugin
+
+= Version 1.2.2 - 2017-10-16 =
+* Feature - Added header variation options
+* Feature - Added footer variation options
+
+= Version 1.2.1 - 2017-08-31 =
+* Tweaks - Updated BxSlider to version 4.2.12
+* Tweaks - WooCommerce sidebar layout now utilizes the same sidebar area provided via the theme by default
+* Tweaks - Image alt text added to the advertisement widgets provided via this theme
+* Tweaks - Introduce selective refresh for site title and description
+* Feature - Added theme starter content introduced in WordPress 4.7
+
+= Version 1.2.0 - 2017-04-27 =
+* Feature - Added option to display the date in header set via WordPress date setting
+* Tweaks - Add theme support for WooCommerce 3.0's new gallery feature
+* Tweaks - Updated FontAwesome icons to version 4.7.0
+* Fix - Search results page design
+
+= Version 1.1.9 - 2017-03-03 =
+* Tweaks - Updated BxSlider to version 4.2.10
+* Tweaks - Add support for customize selective refresh widgets
+* Tweaks - Add TGMPA to recommend ThemeGrill Demo Importer plugin
+
+= Version 1.1.8 - 2017-01-16 =
+* Feature - Added new responsive menu design.
+* Added - RTL Language support.
+* Added - Support for Video Headers introduced in WordPress 4.7.
+
+= Version 1.1.7 - 2016-12-09 =
+* Feature - Migrated the Custom Logo from theme options to the Site Logo in Site Identity section
+
+= Version 1.1.6 - 2016-12-08 =
+* Feature - Added the Custom Site Logo feature introduced in WordPress 4.5
+* Feature - Added support for Site Icon introduced in WordPress 4.3
+* Feature - Added compatibility for ThemeGrill Demo Importer plugin
+* Feature - Migrated the Custom CSS code added in theme settings to Additional CSS section introduced in WordPress 4.7
+
+= Version 1.1.5 - 2016-09-02 =
+* Tweaks - Removed Portugese (Brazil) language file as 100% translation now available at wordpress.org
+* Tweaks - Removed Russian language file as 100% translation now available at wordpress.org
+* Tweaks - Enhancement for the media uploader scripts used in widgets.
+
+= Version 1.1.4 =
+* Tweaks - Updated theme tags as per new introduced tags.
+* Tweaks - Introduced welcome page for theme.
+
+= Version 1.1.3 =
+* Theme information is properly organized in Customize panel.
+* Theme is now compatible with WooCommerce.
+
 = Version 1.1.2 =
 * Updated FontAwesome icons to version 4.5.0
 * Content width is now adjusted according to the layout chooded.

@@ -6,9 +6,8 @@
  * @subpackage ColorMag
  * @since ColorMag 1.0
  */
-?>
 
-<?php get_header(); ?>
+get_header(); ?>
 
 	<?php do_action( 'colormag_before_body_content' ); ?>
 
@@ -63,6 +62,9 @@
 
 							elseif ( is_tax( 'post_format', 'post-format-link' ) ) :
 								_e( 'Links', 'colormag' );
+
+							elseif ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) :
+									woocommerce_page_title( false );
 
 							else :
 								_e( 'Archives', 'colormag' );
