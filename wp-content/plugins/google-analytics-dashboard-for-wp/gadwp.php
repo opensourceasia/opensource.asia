@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Google Analytics Dashboard for WP (GADWP)
- * Plugin URI: https://deconf.com
+ * Plugin URI: https://exactmetrics.com
  * Description: Displays Google Analytics Reports and Real-Time Statistics in your Dashboard. Automatically inserts the tracking code in every page of your website.
- * Author: Alin Marcu
- * Version: 5.1.2.5
- * Author URI: https://deconf.com
+ * Author: ExactMetrics
+ * Version: 5.3.5
+ * Author URI: https://exactmetrics.com
  * Text Domain: google-analytics-dashboard-for-wp
  * Domain Path: /languages
  */
@@ -16,8 +16,13 @@ if ( ! defined( 'ABSPATH' ) )
 
 // Plugin Version
 if ( ! defined( 'GADWP_CURRENT_VERSION' ) ) {
-	define( 'GADWP_CURRENT_VERSION', '5.1.2.5' );
+	define( 'GADWP_CURRENT_VERSION', '5.3.5' );
 }
+
+if ( ! defined( 'GADWP_ENDPOINT_URL' ) ) {
+	define( 'GADWP_ENDPOINT_URL', 'https://gadwp.exactmetrics.com/' );
+}
+
 
 if ( ! class_exists( 'GADWP_Manager' ) ) {
 
@@ -46,6 +51,8 @@ if ( ! class_exists( 'GADWP_Manager' ) ) {
 		public $backend_item_reports = null;
 
 		public $gapi_controller = null;
+
+		public $usage_tracking = null;
 
 		/**
 		 * Construct forbidden
@@ -80,6 +87,9 @@ if ( ! class_exists( 'GADWP_Manager' ) ) {
 				self::$instance = new self();
 				self::$instance->setup();
 				self::$instance->config = new GADWP_Config();
+				if ( is_admin() && class_exists( 'AM_Notification' ) && defined( 'GADWP_CURRENT_VERSION' ) ) {
+					new AM_Notification( 'exact-metrics', GADWP_CURRENT_VERSION );
+				}
 			}
 			return self::$instance;
 		}
@@ -102,6 +112,13 @@ if ( ! class_exists( 'GADWP_Manager' ) ) {
 			// Plugin main File
 			if ( ! defined( 'GADWP_FILE' ) ) {
 				define( 'GADWP_FILE', __FILE__ );
+			}
+
+			/*
+			 * Load notifications class
+			 */
+			if ( is_admin() ) {
+				include_once ( GADWP_DIR . 'admin/class-am-notification.php' );
 			}
 
 			/*
@@ -174,7 +191,7 @@ if ( ! class_exists( 'GADWP_Manager' ) ) {
 		public function load() {
 			if ( is_admin() ) {
 				if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-					if ( GADWP_Tools::check_roles( self::$instance->config->options['ga_dash_access_back'] ) ) {
+					if ( GADWP_Tools::check_roles( self::$instance->config->options['access_back'] ) ) {
 						/*
 						 * Load Backend ajax actions
 						 */
@@ -193,7 +210,16 @@ if ( ! class_exists( 'GADWP_Manager' ) ) {
 					 */
 					include_once ( GADWP_DIR . 'common/ajax-actions.php' );
 					self::$instance->common_actions = new GADWP_Common_Ajax();
-				} else if ( GADWP_Tools::check_roles( self::$instance->config->options['ga_dash_access_back'] ) ) {
+
+					if ( self::$instance->config->options['backend_item_reports'] ) {
+						/*
+						 * Load Backend Item Reports for Quick Edit
+						 */
+						include_once ( GADWP_DIR . 'admin/item-reports.php' );
+						self::$instance->backend_item_reports = new GADWP_Backend_Item_Reports();
+					}
+				} else if ( GADWP_Tools::check_roles( self::$instance->config->options['access_back'] ) ) {
+
 					/*
 					 * Load Backend Setup
 					 */
@@ -215,9 +241,12 @@ if ( ! class_exists( 'GADWP_Manager' ) ) {
 						include_once ( GADWP_DIR . 'admin/item-reports.php' );
 						self::$instance->backend_item_reports = new GADWP_Backend_Item_Reports();
 					}
+
+					include_once ( GADWP_DIR . 'admin/tracking.php' );
+					self::$instance->usage_tracking = new ExactMetrics_Tracking();
 				}
 			} else {
-				if ( GADWP_Tools::check_roles( self::$instance->config->options['ga_dash_access_front'] ) ) {
+				if ( GADWP_Tools::check_roles( self::$instance->config->options['access_front'] ) ) {
 					/*
 					 * Load Frontend Setup
 					 */
@@ -233,7 +262,7 @@ if ( ! class_exists( 'GADWP_Manager' ) ) {
 					}
 				}
 
-				if ( ! GADWP_Tools::check_roles( self::$instance->config->options['ga_track_exclude'], true ) && 'disabled' != self::$instance->config->options['ga_dash_tracking_type'] ) {
+				if ( ! GADWP_Tools::check_roles( self::$instance->config->options['track_exclude'], true ) && 'disabled' != self::$instance->config->options['tracking_type'] ) {
 					/*
 					 * Load tracking class
 					 */

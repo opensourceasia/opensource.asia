@@ -24,6 +24,10 @@ html {
 	-webkit-text-size-adjust: 100%; /* Prevents iOS text size adjust after orientation change, without disabling user zoom */
 	-ms-text-size-adjust: 100%; /* www.456bereastreet.com/archive/201012/controlling_text_size_in_safari_for_ios_without_disabling_user_zoom/ */
 }
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
 article,
 aside,
 details,
@@ -271,9 +275,9 @@ textarea:focus {
 	border: 1px solid #EAEAEA;
 }
 input.s {
-	width: 60%;
+	width: 85%;
 	padding: 4px 54px 4px 10px;
-	height: 36px;
+	height: 46px;
 	color: #777777;
 	background-color: #FFFFFF;
 	margin: 0;
@@ -598,9 +602,8 @@ body {
    line-height: 45px;
    margin-bottom: 0;
    padding: 0 15px;
-   position: absolute;
-   top: 0;
-   right: 0;
+   margin-left: -5px;
+   margin-top: 1px;
 }
 .search-icon:before {
    content: "\f002";
@@ -722,7 +725,8 @@ li.default-menu {
 .main-navigation ul li.current_page_ancestor > a,
 .main-navigation ul li.current-menu-ancestor > a,
 .main-navigation ul li.current_page_item > a,
-.main-navigation ul li:hover > a {
+.main-navigation ul li:hover > a,
+.main-navigation ul li.focus > a {
    background-color: #289dcc;
 }
 .main-navigation li.menu-item-has-children > a:after,
@@ -762,7 +766,6 @@ li.default-menu {
 		}
 	}
 }
-
 .main-navigation .sub-menu,
 .main-navigation .children {
    background-color: #232323;
@@ -804,7 +807,7 @@ li.default-menu {
 	height: 100%;
 	padding: 10px 15px;
 	color: #ffffff;
-	width: 170px;
+	display: block;
    text-align: left;
    text-transform: none;
 }
@@ -833,7 +836,8 @@ li.default-menu {
 	margin: 0;
 	text-align: center;
 	font-family: 'Open Sans', serif;
-   padding-bottom: 0;
+	padding-bottom: 0;
+	line-height: 1.2;
 }
 .site-header .menu-toggle:hover {
    background-color: #289dcc;
@@ -853,7 +857,7 @@ li.default-menu {
 	float: none;
 }
 .main-small-navigation .menu-primary-container,
-.main-small-navigation .nav-menu {
+.main-small-navigation .menu {
    padding-top: 43px;
 }
 .main-small-navigation ul {
@@ -869,7 +873,7 @@ li.default-menu {
   text-transform: uppercase;
 }
 .main-small-navigation .random-post a {
-   padding: 7px 12px;
+   padding: 10px 12px;
    border-bottom: none;
 }
 .main-small-navigation li {
@@ -1874,7 +1878,7 @@ a#scroll-up:hover {
    padding-bottom: 20px;
    padding-left: 5%;
    position: absolute;
-   width: 95%;
+   width: 100%;
 }
 .widget_featured_slider .slide-content .above-entry-meta .cat-links a {
    background-color: #289dcc;
@@ -1946,7 +1950,7 @@ a#scroll-up:hover {
    padding-bottom: 10px;
    padding-left: 5%;
    position: absolute;
-   width: 95%;
+   width: 100%;
 }
 .widget_highlighted_posts .above-entry-meta {
    display: none;
@@ -2520,9 +2524,14 @@ Responsive Structure
 	  cursor: pointer;
 	  display: block;
 	  top: 6px;
-	  color: #fff;
 	  padding: 0 7px;
-	  background-color: #1b7aa0;
+    background-color: #1b7aa0;
+    .fa {
+      color: #fff;
+    }
+    &.active .fa {
+      color: #1b7aa0;
+    }
 	}
 }
 

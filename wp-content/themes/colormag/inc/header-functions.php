@@ -2,9 +2,9 @@
 /**
  * Contains all the fucntions and components related to header part.
  *
- * @package ThemeGrill
+ * @package    ThemeGrill
  * @subpackage ColorMag
- * @since ColorMag 1.0
+ * @since      ColorMag 1.0
  */
 /* * ************************************************************************************* */
 
@@ -16,20 +16,24 @@ if ( ! function_exists( 'colormag_social_links' ) ) :
 	 * Get links through Theme Options
 	 */
 	function colormag_social_links() {
+		// Bail out if social links is not activated
+		if ( get_theme_mod( 'colormag_social_link_activate', 0 ) == 0 ) {
+			return;
+		}
 
 		$colormag_social_links = array(
-			'colormag_social_facebook' => __( 'Facebook', 'colormag' ),
-			'colormag_social_twitter' => __( 'Twitter', 'colormag' ),
-			'colormag_social_googleplus' => __( 'Google-Plus', 'colormag' ),
-			'colormag_social_instagram' => __( 'Instagram', 'colormag' ),
-			'colormag_social_pinterest' => __( 'Pinterest', 'colormag' ),
-			'colormag_social_youtube' => __( 'YouTube', 'colormag' )
+			'colormag_social_facebook'   => 'Facebook',
+			'colormag_social_twitter'    => 'Twitter',
+			'colormag_social_googleplus' => 'Google-Plus',
+			'colormag_social_instagram'  => 'Instagram',
+			'colormag_social_pinterest'  => 'Pinterest',
+			'colormag_social_youtube'    => 'YouTube',
 		);
 		?>
 		<div class="social-links clearfix">
 			<ul>
 				<?php
-				$i = 0;
+				$i                     = 0;
 				$colormag_links_output = '';
 				foreach ( $colormag_social_links as $key => $value ) {
 					$link = get_theme_mod( $key, '' );
@@ -56,7 +60,7 @@ endif;
 
 // Filter the get_header_image_tag() for option of adding the link back to home page option
 function colormag_header_image_markup( $html, $header, $attr ) {
-	$output = '';
+	$output       = '';
 	$header_image = get_header_image();
 
 	if ( ! empty( $header_image ) ) {
@@ -99,9 +103,11 @@ if ( ! function_exists( 'colormag_render_header_image' ) ) :
 				if ( get_theme_mod( 'colormag_header_image_link', 0 ) == 1 ) {
 					?>
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
-					<?php } ?>
-					<div class="header-image-wrap"><img src="<?php echo esc_url( $header_image ); ?>" class="header-image" width="<?php echo get_custom_header()->width; ?>" height="<?php echo get_custom_header()->height; ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>"></div>
-					<?php if ( get_theme_mod( 'colormag_header_image_link', 0 ) == 1 ) { ?>
+				<?php } ?>
+				<div class="header-image-wrap">
+					<img src="<?php echo esc_url( $header_image ); ?>" class="header-image" width="<?php echo get_custom_header()->width; ?>" height="<?php echo get_custom_header()->height; ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>">
+				</div>
+				<?php if ( get_theme_mod( 'colormag_header_image_link', 0 ) == 1 ) { ?>
 					</a>
 					<?php
 				}
@@ -124,23 +130,25 @@ if ( ! function_exists( 'colormag_top_header_bar_display' ) ) :
 			<div class="news-bar">
 				<div class="inner-wrap clearfix">
 					<?php
-					if ( get_theme_mod( 'colormag_date_display', 0 ) == 1 )
+					if ( get_theme_mod( 'colormag_date_display', 0 ) == 1 ) {
 						colormag_date_display();
+					}
 					?>
 
 					<?php
-					if ( get_theme_mod( 'colormag_breaking_news', 0 ) == 1 )
+					if ( get_theme_mod( 'colormag_breaking_news', 0 ) == 1 ) {
 						colormag_breaking_news();
+					}
 					?>
 
 					<?php
-					if ( get_theme_mod( 'colormag_social_link_activate', 0 ) == 1 ) {
+					if ( ( get_theme_mod( 'colormag_social_link_activate', 0 ) == 1 ) && ( ( get_theme_mod( 'colormag_social_link_location_option', 'both' ) == 'both' ) || ( get_theme_mod( 'colormag_social_link_location_option', 'both' ) == 'header' ) ) ) {
 						colormag_social_links();
 					}
 					?>
 				</div>
 			</div>
-			<?php
+		<?php
 		endif;
 	}
 
@@ -161,7 +169,7 @@ if ( ! function_exists( 'colormag_middle_header_bar_display' ) ) :
 			<div id="header-text-nav-wrap" class="clearfix">
 				<div id="header-left-section">
 					<?php
-					if ( (get_theme_mod( 'colormag_header_logo_placement', 'header_text_only' ) == 'show_both' || get_theme_mod( 'colormag_header_logo_placement', 'header_text_only' ) == 'header_logo_only' ) ) {
+					if ( ( get_theme_mod( 'colormag_header_logo_placement', 'header_text_only' ) == 'show_both' || get_theme_mod( 'colormag_header_logo_placement', 'header_text_only' ) == 'header_logo_only' ) ) {
 						?>
 						<div id="header-logo-image">
 							<?php if ( get_theme_mod( 'colormag_logo', '' ) != '' ) { ?>
@@ -177,7 +185,7 @@ if ( ! function_exists( 'colormag_middle_header_bar_display' ) ) :
 						<?php
 					}
 					$screen_reader = '';
-					if ( get_theme_mod( 'colormag_header_logo_placement', 'header_text_only' ) == 'header_logo_only' || (get_theme_mod( 'colormag_header_logo_placement', 'header_text_only' ) == 'disable' ) ) {
+					if ( get_theme_mod( 'colormag_header_logo_placement', 'header_text_only' ) == 'header_logo_only' || ( get_theme_mod( 'colormag_header_logo_placement', 'header_text_only' ) == 'disable' ) ) {
 						$screen_reader = 'screen-reader-text';
 					}
 					?>
@@ -194,8 +202,8 @@ if ( ! function_exists( 'colormag_middle_header_bar_display' ) ) :
 						<?php
 						$description = get_bloginfo( 'description', 'display' );
 						if ( $description || is_customize_preview() ) :
-							?>
-							<p id="site-description"><?php echo $description; ?></p>
+						?>
+						<p id="site-description"><?php echo $description; ?></p>
 						<?php endif; ?><!-- #site-description -->
 					</div><!-- #header-text -->
 				</div><!-- #header-left-section -->
@@ -253,10 +261,14 @@ if ( ! function_exists( 'colormag_below_header_bar_display' ) ) :
 				}
 				?>
 
-				<h4 class="menu-toggle"></h4>
+				<p class="menu-toggle"></p>
 				<?php
 				if ( has_nav_menu( 'primary' ) ) {
-					wp_nav_menu( array( 'theme_location' => 'primary', 'container_class' => 'menu-primary-container', 'items_wrap' => '<ul id="%1$s" class="%2$s">%3$s</ul>' ) );
+					wp_nav_menu( array(
+						'theme_location'  => 'primary',
+						'container_class' => 'menu-primary-container',
+						'items_wrap'      => '<ul id="%1$s" class="%2$s">%3$s</ul>',
+					) );
 				} else {
 					wp_page_menu();
 				}

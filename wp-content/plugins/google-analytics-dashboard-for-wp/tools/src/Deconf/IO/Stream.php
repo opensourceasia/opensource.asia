@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2013 Google Inc.
+ * Copyright 2018 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,6 +86,9 @@ class Deconf_IO_Stream extends Deconf_IO_Abstract
 
     $requestSslContext = array_key_exists('ssl', $default_options) ?
         $default_options['ssl'] : array();
+
+    // Add support for GADWP Endpoint
+    $requestSslContext = apply_filters('gadwp_endpoint_stream_options', $requestSslContext, $request);
 
     if (!$this->client->isAppEngine() && !array_key_exists("cafile", $requestSslContext)) {
       $requestSslContext["cafile"] = dirname(__FILE__) . '/cacerts.pem';

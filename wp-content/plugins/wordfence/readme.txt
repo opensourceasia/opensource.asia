@@ -2,8 +2,9 @@
 Contributors: mmaunder 
 Tags: security, firewall, malware scanner, web application firewall, antivirus, block hackers, country blocking, clean hacked site, blacklist, waf, login security
 Requires at least: 3.9
-Tested up to: 4.9.2
-Stable tag: 7.0.1
+Requires PHP: 5.2
+Tested up to: 4.9.8
+Stable tag: 7.1.11
 
 Secure your website with the most comprehensive WordPress security plugin. Firewall, malware scan, blocking, live traffic, login security & more.
 
@@ -33,7 +34,6 @@ Wordfence includes an endpoint firewall and malware scanner that were built from
 #### SECURITY TOOLS
 * With Live Traffic, monitor visits and hack attempts not shown in other analytics packages in real time; including origin, their IP address, the time of day and time spent on your site.
 * [Premium] Stop brute force attacks permanently by using two factor authentication, one of the most secure forms of remote system authentication available.
-* [Premium] Password Audit ensures your passwords are strong by simulating a hack attempt using our password auditing GPU cluster.
 * The free version of Wordfence includes an excellent comment spam filter. [Premium] An advanced comment spam filter is automatically enabled for premium customers.
 * Block attackers by IP or build advanced rules based on IP Range, Hostname, User Agent and Referrer. [Premium] Country blocking available with Wordfence Premium.
 
@@ -69,7 +69,7 @@ The WordPress security plugin provides the best protection available for your we
 
 = What features does Wordfence Premium enable? =
 
-We offer a Premium API key that gives you real-time updates to the Threat Defense Feed which includes a real-time IP blacklist, firewall rules and malware signatures. Premium support, country blocking, more frequent scans, password auditing, two-factor authentication and spam and spamvertising checks are also included. [Click here to sign-up for Wordfence Premium now](http://www.wordfence.com/) or simply install Wordfence free and start protecting your website.
+We offer a Premium API key that gives you real-time updates to the Threat Defense Feed which includes a real-time IP blacklist, firewall rules and malware signatures. Premium support, country blocking, more frequent scans, two-factor authentication and spam and spamvertising checks are also included. [Click here to sign-up for Wordfence Premium now](http://www.wordfence.com/) or simply install Wordfence free and start protecting your website.
 
 = How does the Wordfence WordPress Firewall protect websites? =
 
@@ -152,6 +152,10 @@ Providing excellent customer service is very important to us.  We offer help to 
 
 Designed for every skill level, [The WordPress Security Learning Center](https://www.wordfence.com/learn/) is dedicated to deepening users’ understanding of security best practices by providing free access to entry-level articles, in-depth articles, videos, industry survey results, graphics and more.
 
+= Where can I find the Wordfence Terms of Use and Privacy Policy? =
+
+These are available on our website: [Terms of Use](https://www.wordfence.com/terms-of-use/) and [Privacy Policy](https://www.wordfence.com/privacy-policy/)
+
 == Screenshots ==
 
 Secure your website with Wordfence. 
@@ -164,10 +168,207 @@ Secure your website with Wordfence.
 6. Block attackers by IP, Country, IP range, Hostname, Browser or Referrer.
 7. The Wordfence Live Traffic view shows you real-time activity on your site including bot traffic and exploit attempts.
 8. Take login security to the next level with Two Factor Authentication.
-9. Audit the strength of your site passwords with our high performance GPU cluster.
 
 
 == Changelog ==
+
+= 7.1.11 =
+* Improvement: Added a custom message field that will show on all block pages.
+* Improvement: Improved the standard appearance for block pages.
+* Improvement: Live Traffic now better displays failed logins.
+* Improvement: Added a constant to prevent direct MySQLi use for hosts with unsupported DB configurations.
+* Improvement: Malware scan results have been modified to include both a public identifier and description.
+* Change: Description updated on the Live Traffic page.
+* Fix: Removed an empty file hash from the old Wordpress core file detection.
+* Fix: Update locking now works on multisites that have removed the original site.
+
+= 7.1.10 =
+* Improvement: Better labeling in Live Traffic for 301 and 302 redirects.
+* Improvement: Login timestamps are now displayed in the site's configured time zone rather than UTC.
+* Improvement: Added detection and a workaround for hosts with a non-functional MySQLi interface.
+* Improvement: The prevent admin registration setting now works with WooCommerce's registration flow.
+* Improvement: For hosts with varying URL values (e.g., AWS instances), notification and alert links now correctly use the canonical admin URL.
+* Fix: Fixed a layout problem with the live traffic disabled notice.
+* Fix: The scan stage that checks "How does Wordfence get IPs?" no longer shows a warning if the call fails.
+
+= 7.1.9 =
+* Improvement: Added an "unsubscribe" link to plugin-generated alerts.
+* Improvement: Added some additional flags.
+* Change: Removed some unnecessary files from the bundled GeoIP library.
+* Change: Updated wording in the Terms of Use/Privacy Policy agreement UI.
+* Change: The minimum "Lock out after how many login failures" is now 2.
+* Change: The diagnostics report now includes the scan issues for easier debugging.
+* Fix: Multiple improvements to automatic updating to avoid broken updates on sites with low resources or slow file systems.
+* Fix: Better text wrapping in the top failed logins widget.
+* Fix: Onboarding CSS/JS is now correctly enqueued for multisite installations.
+* Fix: Fixed a missing asset with the bundled jQueryUI library.
+* Fix: Fixed memory calculation when using PHP's supported shorthand syntax.
+* Fix: Better wrapping behavior on the reason column in the blocks table.
+* Fix: Fixed an issue with an internal data structure to prevent error log entries when using mbstring functions.
+* Fix: Improved bot detection when no user agent is sent.
+
+= 7.1.8 =
+* Improvement: Better detection of removal status when uninstalling the WAF's auto-prepend file.
+* Improvement: Switched optional mailing list signup to go directly through our servers rather than a third party.
+* Fix: Fixed the dashboard erroneously showing the payment method as missing for some payment methods.
+* Fix: If a premium license is deleted from wordfence.com, the plugin will now automatically downgrade rather than get stuck in an intermediate state.
+* Fix: Changed some wording to consistently use "License" or "License Key".
+
+= 7.1.7 =
+* Improvement: Added better support for keyboard navigation of options.
+* Improvement: staging. and dev. subdomains are now supported for sharing premium licenses.
+* Improvement: Bundled our interface font to avoid loading from a remote source and reduced the pages some assets were loaded on.
+* Improvement: Added option to trim Live Traffic records after a specific number of days.
+* Improvement: Updated to the current GeoIP2 database.
+* Improvement: Extended the automatic redaction applied to attack data that may include sensitive information.
+* Change: Removed a no-longer-used API call.
+* Fix: Fixed a few options that couldn't be searched for on the all options page.
+* Fix: Activity Report emails now detect and avoid symlink loops.
+
+= 7.1.6 =
+* Fix: Added a workaround for sites with inaccessible WAF config files when reading php://input
+
+= 7.1.5 =
+* Improvement: GDPR compliance updates.
+* Improvement: The list of blocks now shows the most recently-added blocks at the top by default.
+* Improvement: Added better table status display to Diagnostics to help with debugging.
+* Improvement: Added deferred loading to Live Traffic avatars to improve performance with some plugins.
+* Improvement: The server's own IP is now automatically whitelisted for known safe requests.
+* Fix: Added a workaround to Live Traffic human/bot detection to compensate for other scripts that modify our event handlers.
+* Fix: Fixed an error with Live Traffic human/bot detection when plugins change the load order.
+* Fix: Fixed auto-enabling of some controls when pasting values.
+* Fix: Fixed an instance where http links could be generated for emails rather than https.
+
+= 7.1.4 =
+* Improvement: Added additional XSS detection capabilities.
+* Change: Initial preparation for GDPR compliance. Additional changes will be included in an upcoming release to meet the GDPR deadline.
+* Change: Reworked Live Traffic/Rate Limiting human and bot detection to function without cookies.
+* Change: Removed the wfvt_ cookie as it was no longer necessary.
+* Change: Better debug messaging for scan forking.
+* Fix: PHP deprecation notices no longer suppress those of old OpenSSL or WordPress.
+* Fix: Fixes to the deprecated OpenSSL version detection and alerting to handle non-patch version numbers.
+* Fix: Added detection for and fixed a very large pcre.backtrack_limit setting that could cause scans to fail, when modified by other plugins.
+* Fix: Scan issue alert emails no longer incorrectly show high sensitivity was enabled.
+* Fix: Fixed wrapping of long strings on the Diagnostics page.
+
+= 7.1.3 =
+* Improvement: Improved the performance of our config table status check.
+* Improvement: The IP address of the user activating Wordfence is now used by the breached password check until an admin successfully logs in.
+* Improvement: Added several new error displays for scan failures to help diagnose and fix issues.
+* Improvement: Added the block duration to alerts generated when an IP is blocked.
+* Improvement: A text version of scan results is now included in the activity log email.
+* Improvement: The WAF install/uninstall process no longer asks to backup files that do not exist.
+* Change: Began a phased rollout of moving brute force queries to be https-only.
+* Change: Added the initial deprecation notice for PHP 5.2.
+* Change: Suppressed a script tag on the diagnostics page from being output in the email version.
+* Fix: Addressed an issue where plugins that return a null user during authentication would cause a PHP notice to be logged.
+* Fix: Fixed an issue where plugins that use non-standard version formatting could end up with a inaccurate vulnerability status.
+* Fix: Added a workaround for web email clients that erroneously encode some URL characters (e.g., #).
+
+= 7.1.2 =
+* Improvement: Added support for filtering the blocks list.
+* Improvement: Added a flow for generating the WAF autoprepend file and retrieving the path for manual installations.
+* Improvement: Added a variety of new data values to the Diagnostics page to aid in debugging issues.
+* Improvement: SVG files now have the JavaScript-based malware signatures run against them.
+* Improvement: More descriptive text for the scan issue email when there's an unknown WordPress core version.
+* Improvement: Added a dedicated error display that will show when a scan is detected as failed.
+* Improvement: readme.html and wp-config-sample.php are no longer scanned for changes due to differences between languages (malware signatures still run).
+* Improvement: When the license status changes, it now triggers a fresh pull of the WAF rules.
+* Improvement: Added dedicated messaging for leftover WordPress core files that were not fully removed during upgrade.
+* Improvement: Improved labeling in Live Traffic for hits blocked by the real-time IP blacklist.
+* Improvement: Added forced wrapping to the file paths in the activity report email to avoid scroll bar overlap making them unreadable.
+* Improvement: Updated the bundled GeoIP database.
+* Improvement: Updated the bundled browscap database.
+* Improvement: All emailed alerts now include a link to the generating site.
+* Change: Minor text change to unify some terminology.
+* Fix: Removed a remaining reference to the CDN version of Font Awesome.
+* Fix: Removed an old reference to the pre-Wordfence 7.1 lockouts table.
+* Fix: Scan results for malware detections in posts are no longer clickable.
+* Fix: We now verify that there's a valid email address defined before attempting to send an alert and filter out any invalid ones.
+* Fix: Added a workaround for GoDaddy/Limit Login Attempts suppressing the 2FA prompting.
+
+= 7.1.1 =
+* Improvement: Added the ability to sort the blocks table.
+* Improvement: Added short-term caching of breach check results.
+* Improvement: The check for passwords leaked in breaches now allows a login if the user has previously logged in from the same IP successfully and displays an admin notice suggesting changing the password.
+* Improvement: Switched the bundled select2 library to use to prefixed version to work around other plugins including older versions on our pages.
+* Improvement: The scan page now displays when beta signatures are enabled since they can produce false positives.
+* Improvement: Improved positioning of the "Wordfence is Working" message.
+* Improvement: Added a character limit to the reason on blocks and forced wrapping to avoid the layout stretching too much.
+* Fix: Fixed an issue with some table prefixing where multisite installations with rare configurations could result in unknown table warnings.
+* Fix: Removed an older behavior with live traffic buttons that could allow them to open in a new tab and show nothing.
+* Fix: Added a check for sites with inaccurate disk space function results to avoid showing an issue.
+* Fix: Added a secondary check to the email summary cron to avoid repeated sending if the cron list is corrupted.
+* Fix: Fixed a typo on the Advanced Comment Spam Filter page.
+
+= 7.1.0 =
+* Improvement: Added a new feature to prevent attackers from successfully logging in to admin accounts whose passwords have been in data breaches.
+* Improvement: Added pagination support to the scan issues.
+* Improvement: Improved time zone handling for the WAF's learning mode.
+* Improvement: Improved messaging on file-related scan issues when the file is wp-config.php.
+* Improvement: Modified the appearance of the "How does Wordfence get IPs" option to be more clear.
+* Improvement: Better messaging about the scan options that need to be enabled for free installations to achieve 100%.
+* Improvement: The country blocking selection drawer behavior has been changed to now allow saving directly from it.
+* Improvement: Increased the textarea size for the advanced firewall options to make editing easier.
+* Improvement: The URL blacklist check now includes additional variants in some checks to more accurately match.
+* Change: Adjusted messaging when blocks are loading.
+* Change: Wording change for the option "Maximum execution time for each stage".
+* Change: Permanent blocks now display "Permanent" rather than "Indefinite" for the expiration for consistency.
+* Fix: Fixed the initial status code recorded for lockouts and blocks.
+* Fix: Fixed PHP notices that could occur when using the bulk delete/repair scan tools.
+* Fix: Improved the state updating for the scan bulk action buttons.
+* Fix: Usernames in live traffic now correctly link to the corresponding profile page.
+* Fix: Addressed a PHP warning that could occur if wordpress.org returned a certain format for the abandoned plugin check.
+* Fix: Fixed a possible PHP notice when syncing attack data records without metadata attached.
+* Fix: Modified the behavior of the disk space check to avoid a scan warning showing without an issue generated.
+* Fix: Fixed a CSS glitch where the top controls could have extra space at the top when sites have long navigation menus.
+* Fix: Updated some wording in the All Options search box.
+* Fix: Removed an old link for "See Recent Traffic" on Live Traffic that went nowhere.
+
+= 7.0.5 =
+* Change: Live Traffic records are no longer created for hits initiated by WP-CLI (e.g., manually running cron).
+* Fix: Fixed an issue where the human/bot detection wasn't functioning.
+
+= 7.0.4 =
+* Fix: Re-added missing file to fix commit excluding it.
+
+= 7.0.3 =
+* Improvement: Added an "All Options" page to enable developers and others to more rapidly configure Wordfence.
+* Improvement: Improved messaging for when a page has been open for more than a day and the security token expires.
+* Improvement: Relocated the "Always display expanded Live Traffic records" option to be more accessible.
+* Improvement: Improved appearance and behavior of option checkboxes.
+* Improvement: For plugins with incomplete header information, they're now shown with a fallback title in scan results as appropriate.
+* Improvement: The country block rule in the blocks table now shows a count rather than a potentially large list of countries.
+* Change: Modified behavior of the advanced country blocking options to always show.
+* Fix: Fixed the "Make Permanent" button behavior for blocks created from Live Traffic.
+* Fix: Better synchronization of block records to the WAF config to avoid duplicate queries.
+* Fix: The diff viewer now forces wrapping to prevent long lines of text from stretching the layout.
+* Fix: Fixed an issue where the scanned plugin count could be inaccurate due to forking during the plugin scan.
+* Fix: Adjusted sizing on the country blocking options to prevent placeholder text from being cut off at some screen sizes.
+* Fix: Block/Unblock now works correctly when viewing Live Traffic with it grouped by IP.
+* Fix: Fixed an issue where the count of URLs checked was incorrect.
+
+= 7.0.2 =
+* Improvement: Added CSS/JS filename versioning to address caching plugins not refreshing for plugin updates.
+* Improvement: The premium key is no longer prompted for during installation if already present from an earlier version.
+* Improvement: Added a check and corresponding notice if the WAF config is unreadable or invalid.
+* Improvement: Improved live traffic sizing on smaller screens.
+* Improvement: Added tour coverage for live traffic.
+* Change: IPs blocked via live traffic now use the configurable how long is an IP blocked setting to match previous behavior.
+* Change: Changed the option to enable live traffic to match the wording and style of other options.
+* Change: Changed styling on the unknown country display in live traffic to match the common coloring.
+* Change: Statistics that do not depend on the WAF for their data now display when it is in learning mode.
+* Change: Scan issues that are indicative of a compromised site are moved to the top of the list.
+* Change: Changed styling on unselected checkboxes.
+* Fix: Quick scans no longer run daily if automatic scheduled scans are disabled.
+* Fix: The update check in a quick scan no longer runs if the update check has been turned off for regular scans.
+* Fix: Fixed the quick navigation letters in the country picker not scrolling.
+* Fix: Fixed editing the country block configuration when there are a large number of other blocks.
+* Fix: Addressed an issue where having the country block or a pattern block selected when clicking Make Permanent could break them.
+* Fix: Live traffic entries with long user agents no longer cause the table to stretch.
+* Fix: Fixed an issue where live traffic would stop loading new records if always display expanded records was on.
+* Fix: Suppressed warnings on IP conversion functions when processing potentially incomplete data.
+* Fix: Added a check in REST API hooks to avoid defining a constant twice.
 
 = 7.0.1 =
 * Comprehensive UI refresh.

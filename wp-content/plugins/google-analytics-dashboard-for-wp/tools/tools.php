@@ -1,8 +1,8 @@
 <?php
 /**
- * Author: Alin Marcu
- * Author URI: https://deconf.com
- * Copyright 2013 Alin Marcu
+ * Author: ExactMetrics team
+ * Author URI: https://exactmetrics.com
+ * Copyright 2018 ExactMetrics team
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -16,7 +16,7 @@ if ( ! class_exists( 'GADWP_Tools' ) ) {
 	class GADWP_Tools {
 
 		public static function get_countrycodes() {
-			include_once 'iso3166.php';
+			include 'iso3166.php';
 			return $country_codes;
 		}
 
@@ -58,14 +58,6 @@ if ( ! class_exists( 'GADWP_Tools' ) ) {
 
 		public static function strip_protocol( $domain ) {
 			return str_replace( array( "https://", "http://", " " ), "", $domain );
-		}
-
-		public static function clear_transients() {
-			global $wpdb;
-			$sqlquery = $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_gadash%%'" );
-			$sqlquery = $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_timeout_gadash%%'" );
-			$sqlquery = $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_ga_dash%%'" );
-			$sqlquery = $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_timeout_ga_dash%%'" );
 		}
 
 		public static function colourVariator( $colour, $per ) {
@@ -148,30 +140,6 @@ if ( ! class_exists( 'GADWP_Tools' ) ) {
 			}
 		}
 
-		public static function set_site_cache( $name, $value, $expiration = 0 ) {
-			$option = array( 'value' => $value, 'expires' => time() + (int) $expiration );
-			update_site_option( 'gadwp_cache_' . $name, $option );
-		}
-
-		public static function delete_site_cache( $name ) {
-			delete_site_option( 'gadwp_cache_' . $name );
-		}
-
-		public static function get_site_cache( $name ) {
-			$option = get_site_option( 'gadwp_cache_' . $name );
-
-			if ( false === $option || ! isset( $option['value'] ) || ! isset( $option['expires'] ) ) {
-				return false;
-			}
-
-			if ( $option['expires'] < time() ) {
-				delete_option( 'gadwp_cache_' . $name );
-				return false;
-			} else {
-				return $option['value'];
-			}
-		}
-
 		public static function clear_cache() {
 			global $wpdb;
 			$sqlquery = $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'gadwp_cache_qr%%'" );
@@ -232,7 +200,7 @@ if ( ! class_exists( 'GADWP_Tools' ) ) {
 				}
 				return $dom;
 			} else {
-				self::set_cache( 'last_error', date( 'Y-m-d H:i:s' ) . ': ' . __( 'DOM is disabled or libxml PHP extension is missing. Contact your hosting provider. Automatic tracking of events for AMP pages is not possible.', 'google-analytics-dashboard-for-wp' ), 24*60*60 );
+				self::set_error( __( 'DOM is disabled or libxml PHP extension is missing. Contact your hosting provider. Automatic tracking of events for AMP pages is not possible.', 'google-analytics-dashboard-for-wp' ), 24 * 60 * 60 );
 				return false;
 			}
 		}
@@ -244,6 +212,103 @@ if ( ! class_exists( 'GADWP_Tools' ) ) {
 				$out .= $dom->saveXML( $node );
 			}
 			return $out;
+		}
+
+		public static function array_keys_rename( $options, $keys ) {
+			foreach ( $keys as $key => $newkey ) {
+				if ( isset( $options[$key] ) ) {
+					$options[$newkey] = $options[$key];
+					unset( $options[$key] );
+				}
+			}
+			return $options;
+		}
+
+		public static function set_error( $e, $timeout ) {
+			if ( is_object( $e ) ) {
+				self::set_cache( 'last_error', date( 'Y-m-d H:i:s' ) . ': ' . esc_html( $e ), $timeout );
+				if ( method_exists( $e, 'getCode' ) && method_exists( $e, 'getErrors' ) ) {
+					self::set_cache( 'gapi_errors', array( $e->getCode(), (array) $e->getErrors() ), $timeout );
+				}
+			} else {
+				self::set_cache( 'last_error', date( 'Y-m-d H:i:s' ) . ': ' . esc_html( $e ), $timeout );
+			}
+
+			// Count Errors until midnight
+			$midnight = strtotime( "tomorrow 00:00:00" ); // UTC midnight
+			$midnight = $midnight + 8 * 3600; // UTC 8 AM
+			$tomidnight = $midnight - time();
+			$errors_count = self::get_cache( 'errors_count' );
+			$errors_count = (int) $errors_count + 1;
+			self::set_cache( 'errors_count', $errors_count, $tomidnight );
+		}
+
+		public static function anonymize_options( $options ) {
+			global $wp_version;
+
+			$options['wp_version'] = $wp_version;
+			$options['gadwp_version'] = GADWP_CURRENT_VERSION;
+			if ( $options['token'] ) {
+				$options['token'] = 'HIDDEN';
+			}
+			if ( $options['client_secret'] ) {
+				$options['client_secret'] = 'HIDDEN';
+			}
+
+			return $options;
+		}
+
+		public static function system_info() {
+			$info = '';
+
+			// Server Software
+			$server_soft = "-";
+			if ( isset( $_SERVER['SERVER_SOFTWARE'] ) ) {
+				$server_soft = $_SERVER['SERVER_SOFTWARE'];
+			}
+			$info .= 'Server Info: ' . $server_soft . "\n";
+
+			// PHP version
+			if ( defined( 'PHP_VERSION' ) ) {
+				$info .= 'PHP Version: ' . PHP_VERSION . "\n";
+			} else if ( defined( 'HHVM_VERSION' ) ) {
+				$info .= 'HHVM Version: ' . HHVM_VERSION . "\n";
+			} else {
+				$info .= 'Other Version: ' . '-' . "\n";
+			}
+
+			/*
+			 * PHP extensions
+			 * if ( is_callable( 'get_loaded_extensions' ) ) {
+			 * $info .= 'Loaded Extensions: ' . implode(', ', get_loaded_extensions()) . "\n";
+			 * } else {
+			 * $info .= 'Loaded Extensions: ' . '-' . "\n";
+			 * }
+			 */
+
+			// cURL Info
+			if ( function_exists( 'curl_version' ) && function_exists( 'curl_exec' ) ) {
+				$curl_version = curl_version();
+				if ( ! empty( $curl_version ) ) {
+					$curl_ver = $curl_version['version'] . " " . $curl_version['ssl_version'];
+				} else {
+					$curl_ver = '-';
+				}
+			} else {
+				$curl_ver = '-';
+			}
+			$info .= 'cURL Info: ' . $curl_ver . "\n";
+
+			// Gzip
+			if ( is_callable( 'gzopen' ) ) {
+				$gzip = true;
+			} else {
+				$gzip = false;
+			}
+			$gzip_status = ( $gzip ) ? 'Yes' : 'No';
+			$info .= 'Gzip: ' . $gzip_status . "\n";
+
+			return $info;
 		}
 	}
 }

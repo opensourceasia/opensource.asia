@@ -1,14 +1,15 @@
 <?php
 require_once('wfDB.php');
 class wfSchema {
-	private $deprecatedTables = array(
+	private static $deprecatedTables = array(
 		'wfBlocks',
 		'wfBlocksAdv',
 		'wfLockedOut',
-		'wfThrottleLog',	
+		'wfThrottleLog',
+		'wfNet404s',
 	);
 	
-	private $tables = array(
+	private static $tables = array(
 "wfBadLeechers" => "(
   `eMin` int(10) unsigned NOT NULL,
   `IP` binary(16) NOT NULL DEFAULT '\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0',
@@ -167,13 +168,6 @@ class wfSchema {
   KEY `k1` (`ctime`),
   KEY `k2` (`type`)
 ) DEFAULT CHARSET=utf8",
-'wfNet404s' => "(
-  `sig` binary(16) NOT NULL,
-  `ctime` int(10) unsigned NOT NULL,
-  `URI` varchar(1000) NOT NULL,
-  PRIMARY KEY (`sig`),
-  KEY `k1` (`ctime`)
-) DEFAULT CHARSET=utf8",
 'wfHoover' => "(
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `owner` text,
@@ -237,7 +231,14 @@ class wfSchema {
   `html` text NOT NULL,
   `links` text NOT NULL,
   PRIMARY KEY (`id`)
-) DEFAULT CHARSET=utf8;"
+) DEFAULT CHARSET=utf8;",
+'wfLiveTrafficHuman' => "(
+  `IP` binary(16) NOT NULL DEFAULT '\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0',
+  `identifier` binary(32) NOT NULL DEFAULT '\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0',
+  `expiration` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`IP`,`identifier`),
+  KEY `expiration` (`expiration`)
+) DEFAULT CHARSET=utf8;",
 /*
 'wfPerfLog' => "(
 	id int UNSIGNED NOT NULL auto_increment PRIMARY KEY,
@@ -261,36 +262,31 @@ class wfSchema {
 */
 );
 	private $db = false;
-	private $prefix = 'wp_';
 	public function __construct($dbhost = false, $dbuser = false, $dbpassword = false, $dbname = false){
-		/*
-		if($dbhost){ //for testing
-			$this->db = new wfDB(false, $dbhost, $dbuser, $dbpassword, $dbname);
-			$this->prefix = 'wp_';
-		} else {
-		*/
-		global $wpdb;
 		$this->db = new wfDB();
-		$this->prefix = $wpdb->base_prefix;
 	}
 	public function dropAll(){
-		foreach($this->tables as $table => $def){
-			$this->db->queryWrite("drop table if exists " . $this->prefix . $table);
+		foreach(self::$tables as $table => $def){
+			$this->db->queryWrite("drop table if exists " . wfDB::networkTable($table));
 		}
 		
-		foreach ($this->deprecatedTables as $table) {
-			$this->db->queryWrite("drop table if exists " . $this->prefix . $table);
+		foreach (self::$deprecatedTables as $table) {
+			$this->db->queryWrite("drop table if exists " . wfDB::networkTable($table));
 		}
 	}
 	public function createAll(){
-		foreach($this->tables as $table => $def){
-			$this->db->queryWrite("create table IF NOT EXISTS " . $this->prefix . $table . " " . $def);
+		foreach(self::$tables as $table => $def){
+			$this->db->queryWrite("create table IF NOT EXISTS " . wfDB::networkTable($table) . " " . $def);
 		}
 	}
 	public function create($table){
-		$this->db->queryWrite("create table IF NOT EXISTS " . $this->prefix . $table . " " . $this->tables[$table]);
+		$this->db->queryWrite("create table IF NOT EXISTS " . wfDB::networkTable($table) . " " . self::$tables[$table]);
 	}
 	public function drop($table){
-		$this->db->queryWrite("drop table if exists " . $this->prefix . $table);
+		$this->db->queryWrite("drop table if exists " . wfDB::networkTable($table));
+	}
+	
+	public static function tableList() {
+		return array_keys(self::$tables);
 	}
 }

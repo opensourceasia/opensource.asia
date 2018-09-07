@@ -1,8 +1,8 @@
 <?php
 /**
- * Author: Alin Marcu
- * Author URI: https://deconf.com
- * Copyright 2013 Alin Marcu
+ * Author: ExactMetrics team
+ * Author URI: https://exactmetrics.com
+ * Copyright 2018 ExactMetrics team
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -19,8 +19,8 @@ if ( ! class_exists( 'GADWP_Common_Ajax' ) ) {
 
 		public function __construct() {
 			$this->gadwp = GADWP();
-			
-			if ( GADWP_Tools::check_roles( $this->gadwp->config->options['ga_dash_access_back'] ) || GADWP_Tools::check_roles( $this->gadwp->config->options['ga_dash_access_front'] ) ) {
+
+			if ( GADWP_Tools::check_roles( $this->gadwp->config->options['access_back'] ) || GADWP_Tools::check_roles( $this->gadwp->config->options['access_front'] ) ) {
 				add_action( 'wp_ajax_gadwp_set_error', array( $this, 'ajax_set_error' ) );
 			}
 		}
@@ -34,9 +34,8 @@ if ( ! class_exists( 'GADWP_Common_Ajax' ) ) {
 			if ( ! isset( $_POST['gadwp_security_set_error'] ) || ! ( wp_verify_nonce( $_POST['gadwp_security_set_error'], 'gadwp_backend_item_reports' ) || wp_verify_nonce( $_POST['gadwp_security_set_error'], 'gadwp_frontend_item_reports' ) ) ) {
 				wp_die( - 40 );
 			}
-			
-			GADWP_Tools::set_cache( 'last_error', date( 'Y-m-d H:i:s' ) . ': ' . esc_html( $_POST['response'] ), 24 * 60 * 60 );
-			
+			$timeout = 24 * 60 * 60;
+			GADWP_Tools::set_error( $_POST['response'], $timeout );
 			wp_die();
 		}
 	}

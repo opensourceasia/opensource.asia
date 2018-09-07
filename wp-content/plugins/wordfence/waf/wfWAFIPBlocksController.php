@@ -429,6 +429,28 @@ class wfWAFIPBlocksController
 	}
 	
 	protected function checkForWhitelisted($ip) {
+		try {
+			$pluginABSPATH = wfWAF::getInstance()->getStorageEngine()->getConfig('pluginABSPATH');
+			$serverIPsJSON = wfWAF::getInstance()->getStorageEngine()->getConfig('serverIPs');
+		}
+		catch (Exception $e) {
+			// Do nothing
+		}
+		
+		$serverIPs = @wfWAFUtils::json_decode($serverIPsJSON);
+		if (is_array($serverIPs)) {
+			if (
+				(isset($_SERVER['SCRIPT_FILENAME']) && $_SERVER['SCRIPT_FILENAME'] == realpath($pluginABSPATH . DIRECTORY_SEPARATOR . 'wp-cron.php')) || //Safe -- plugin will do a final check to make sure the cron constant is defined
+				(!empty($_GET['wordfence_syncAttackData'])) //Safe but plugin will do a final check to make sure it runs
+			) {
+				foreach ($serverIPs as $testIP) {
+					if (wfWAFUtils::inet_pton($ip) == wfWAFUtils::inet_pton($testIP)) {
+						return true;
+					}
+				}
+			}
+		}
+		
 		$wordfenceLib = realpath(dirname(__FILE__) . '/../lib');
 		include($wordfenceLib . '/wfIPWhitelist.php'); /** @var $wfIPWhitelist */
 		foreach ($wfIPWhitelist as $group) {
@@ -445,18 +467,25 @@ class wfWAFIPBlocksController
 		return false;
 	}
 	
-	protected function ip2Country($ip){
-		$wordfenceLib = realpath(dirname(__FILE__) . '/../lib');
-		require_once(dirname(__FILE__) . '/wfWAFGeoIP.php');
-		if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
-			$gi = geoip_open($wordfenceLib . "/GeoIPv6.dat", WF_GEOIP_STANDARD);
-			$country = geoip_country_code_by_addr_v6($gi, $ip);
-		} else {
-			$gi = geoip_open($wordfenceLib . "/GeoIP.dat", WF_GEOIP_STANDARD);
-			$country = geoip_country_code_by_addr($gi, $ip);
+	protected function ip2Country($ip) {
+		if (version_compare(phpversion(), '5.4.0', '<')) {
+			return '';
 		}
-		geoip_close($gi);
-		return $country ? $country : '';
+		
+		if (!class_exists('wfWAFGeoIP2')) {
+			require_once(dirname(__FILE__) . '/wfWAFGeoIP2.php');
+		}
+		
+		try {
+			$geoip = wfWAFGeoIP2::shared();
+			$code = $geoip->countryCode($ip);
+			return is_string($code) ? $code : '';
+		}
+		catch (Exception $e) {
+			//Ignore
+		}
+		
+		return '';
 	}
 	
 	/**

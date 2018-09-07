@@ -1,8 +1,8 @@
 <?php
 /**
- * Author: Alin Marcu
- * Author URI: https://deconf.com
- * Copyright 2017 Alin Marcu
+ * Author: ExactMetrics team
+ * Author URI: https://exactmetrics.com
+ * Copyright 2018 ExactMetrics team
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -19,10 +19,14 @@ if ( ! class_exists( 'GADWP_Tracking_TagManager' ) ) {
 
 		private $datalayer;
 
+		private $uaid;
+
 		public function __construct() {
 			$this->gadwp = GADWP();
 
-			$this->load_scripts();
+			$profile = GADWP_Tools::get_selected_profile( $this->gadwp->config->options['ga_profiles_list'], $this->gadwp->config->options['tableid_jail'] );
+
+			$this->uaid = esc_html( $profile[2] );
 
 			if ( $this->gadwp->config->options['trackingcode_infooter'] ) {
 				add_action( 'wp_footer', array( $this, 'output' ), 99 );
@@ -33,16 +37,6 @@ if ( ! class_exists( 'GADWP_Tracking_TagManager' ) ) {
 			if ( $this->gadwp->config->options['amp_tracking_tagmanager'] && $this->gadwp->config->options['amp_containerid'] ) {
 				add_filter( 'amp_post_template_data', array( $this, 'amp_add_analytics_script' ) );
 				add_action( 'amp_post_template_footer', array( $this, 'amp_output' ) );
-			}
-		}
-
-		/**
-		 * Styles & Scripts load
-		 */
-		private function load_scripts() {
-			if ( $this->gadwp->config->options['tm_pagescrolldepth_tracking'] ) {
-				wp_enqueue_script( 'gadwp-pagescrolldepth-tracking', GADWP_URL . 'front/js/tracking-scrolldepth.js', array( 'jquery' ), GADWP_CURRENT_VERSION, $this->gadwp->config->options['trackingcode_infooter'] );
-				wp_enqueue_script( 'gadwp-tracking-tagmanager-events', GADWP_URL . 'front/js/tracking-tagmanager-events.js', array( 'jquery', 'gadwp-pagescrolldepth-tracking' ), GADWP_CURRENT_VERSION, $this->gadwp->config->options['trackingcode_infooter'] );
 			}
 		}
 
@@ -73,7 +67,7 @@ if ( ! class_exists( 'GADWP_Tracking_TagManager' ) ) {
 		/**
 		 * Builds the datalayer based on user's options
 		 */
-		private function build_datalayer() {
+		private function build_custom_dimensions() {
 			global $post;
 
 			if ( $this->gadwp->config->options['tm_author_var'] && ( is_single() || is_page() ) ) {
@@ -96,7 +90,7 @@ if ( ! class_exists( 'GADWP_Tracking_TagManager' ) ) {
 			}
 
 			if ( $this->gadwp->config->options['tm_category_var'] && is_category() ) {
-				$this->add_var( 'gadwpCategory', esc_attr( single_tag_title() ) );
+				$this->add_var( 'gadwpCategory', esc_attr( single_tag_title( '', false ) ) );
 			}
 			if ( $this->gadwp->config->options['tm_category_var'] && is_single() ) {
 				global $post;
@@ -134,7 +128,7 @@ if ( ! class_exists( 'GADWP_Tracking_TagManager' ) ) {
 		 * Outputs the Google Tag Manager tracking code
 		 */
 		public function output() {
-			$this->build_datalayer();
+			$this->build_custom_dimensions();
 
 			if ( is_array( $this->datalayer ) ) {
 				$vars = "{";
@@ -145,6 +139,10 @@ if ( ! class_exists( 'GADWP_Tracking_TagManager' ) ) {
 				$vars .= "}";
 			} else {
 				$vars = "{}";
+			}
+
+			if ( ( $this->gadwp->config->options['tm_optout'] || $this->gadwp->config->options['tm_dnt_optout'] ) && ! empty( $this->uaid ) ) {
+				GADWP_Tools::load_view( 'front/views/analytics-optout-code.php', array( 'uaid' => $this->uaid, 'gaDntOptout' => $this->gadwp->config->options['tm_dnt_optout'], 'gaOptout' => $this->gadwp->config->options['tm_optout'] ) );
 			}
 
 			GADWP_Tools::load_view( 'front/views/tagmanager-code.php', array( 'containerid' => $this->gadwp->config->options['web_containerid'], 'vars' => $vars ) );
@@ -167,7 +165,21 @@ if ( ! class_exists( 'GADWP_Tracking_TagManager' ) ) {
 		 * Outputs the Tag Manager code for AMP
 		 */
 		public function amp_output() {
-			?><amp-analytics config="https://www.googletagmanager.com/amp.json?id=<?php echo $this->gadwp->config->options['amp_containerid']; ?>&gtm.url=SOURCE_URL" data-credentials="include"></amp-analytics><?php
+			$this->build_custom_dimensions();
+
+			$vars = array( 'vars' => $this->datalayer );
+
+			if ( version_compare( phpversion(), '5.4.0', '<' ) ) {
+				$json = json_encode( $vars );
+			} else {
+				$json = json_encode( $vars, JSON_PRETTY_PRINT );
+			}
+
+			$amp_containerid = $this->gadwp->config->options['amp_containerid'];
+
+			$json = str_replace( array( '"&#91;', '&#93;"' ), array( '[', ']' ), $json ); // make verticalBoundaries a JavaScript array
+
+			GADWP_Tools::load_view( 'front/views/tagmanager-amp-code.php', array( 'json' => $json, 'containerid' => $amp_containerid ) );
 		}
 	}
 }

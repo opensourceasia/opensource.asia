@@ -50,6 +50,34 @@ and we will include it within the theme from next version update.
 /**********************************************************/
 
 == Changelog ==
+= Version 1.3.1 - 2018-08-31 =
+* Update - Upsell link
+
+= Version 1.3.0 - 2018-08-29 =
+* Fix - Menu toggle tag
+* Fix - Image upload issue in advertisement widgets for customizer option
+
+= Version 1.2.9 - 2018-05-24 =
+* Feature - Added option to display social link in header, footer or both header and footer location
+
+= Version 1.2.8 - 2018-05-09 =
+* Feature - Added featured image disable option for single post page
+* Feature - Added featured image display option for single page
+
+= Version 1.2.7 - 2018-4-20 =
+* Tweaks - Remove translations from social icons display
+
+= Version 1.2.6 - 2018-03-20 =
+* Fix - Slider anchors unclickable in Firefox browsers versioned 59+.
+
+= Version 1.2.5 - 2018-03-15 =
+* Fix - Flex issue on safari
+
+= Version 1.2.4 - 2018-02-27 =
+* Fix - Header layout ( Main Header Area Display ) design issue
+* Fix - Touchscreen submenu double click issue in small devices
+* Tweaks - Introduce customizer live preview and selective refresh feature.
+
 = Version 1.2.3 - 2017-12-12 =
 * Added - Scrollbar for fixed better responsive menu if overflow.
 * Tweaks - Touch screen accessible submenu
